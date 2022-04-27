@@ -1,11 +1,29 @@
-import React from "react";
-import { useSignInWithGoogle } from 'react-firebase-hooks/auth';
-import auth from '../../../firebase/firebase.init'
+import axios from "axios";
+import { useAuthState, useSignInWithGoogle } from "react-firebase-hooks/auth";
+import { useLocation, useNavigate } from "react-router-dom";
+import auth from "../../../firebase/firebase.init";
 const Login = () => {
-    const [signInWithGoogle, user, loading, error] = useSignInWithGoogle(auth);
-    const handleGoogleSignIn = () => {
-        signInWithGoogle()
-    }
+  const [signInWithGoogle] = useSignInWithGoogle(auth);
+  const [user,loading,error] = useAuthState(auth)
+  const navigate = useNavigate()
+  const handleGoogleSignIn = () => {
+    signInWithGoogle();
+  };
+  const location = useLocation()
+  console.log(location)
+  const from = location?.state?.from?.pathname || '/'
+  if(user){
+    const handleToken = () => {
+      const email = {email: user.email}
+      axios.post('http://localhost:5000/login',email)
+      .then(response => {
+        const {accessToken} = response.data
+        localStorage.setItem("accessToken",accessToken)
+        navigate(from,{replace: true})
+      })
+    } 
+    handleToken()
+  }
   return (
     <div className="min-vh-100 container">
       <form className="mx-auto my-5 w-75">
@@ -47,7 +65,12 @@ const Login = () => {
           Submit
         </button>
       </form>
-      <button onClick={handleGoogleSignIn} className="btn btn-warning px-5 d-block mx-auto my-4">Google sign in</button>
+      <button
+        onClick={handleGoogleSignIn}
+        className="btn btn-warning px-5 d-block mx-auto my-4"
+      >
+        Google sign in
+      </button>
     </div>
   );
 };

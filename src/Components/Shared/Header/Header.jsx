@@ -25,9 +25,16 @@ const Header = () => {
               <li className="nav-item">
                 <Link to="/product"  className="nav-link active fs-5" aria-current="page" href="#">product</Link>
               </li>
-              <li className="nav-item">
-                <Link to="/updatepd"  className="nav-link active fs-5" aria-current="page" href="#">Update Product</Link>
+              
+              {
+                user && <><li className="nav-item">
+                <Link to="/uploadpd"  className="nav-link active fs-5" aria-current="page" href="#">Upload Product</Link>
               </li>
+              <li className="nav-item">
+                <Link to="/myorders"  className="nav-link active fs-5" aria-current="page" href="#">My Orders</Link>
+                </li>
+              </>
+              }
             </ul>
             {user ? <button className='btn btn-danger' onClick={handleSignOut}>SignUp</button> :
                 <Link to="/login"  className="nav-link active fs-5 btn btn-danger d-inline-block" aria-current="page" href="#">Login</Link>
